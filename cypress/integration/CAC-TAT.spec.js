@@ -19,6 +19,7 @@ describe('Central de Atendimento ao Cliente TAT', function () {
     })
 
     it('preenche os campos obrigatórios e envia o formulário', function () {
+      
         cy.get('#firstName')
             .click()
             .type("Igor")
@@ -55,12 +56,13 @@ describe('Central de Atendimento ao Cliente TAT', function () {
         cy.get('#open-text-area').click().type("Este é apenas um teste",{delay:0})    
 
 
-        cy.get('.button').click()
+        cy.get('button[type="submit"]').click()
 
         cy.get('.error').should('be.visible')
     })
 
     it('preenche campo telefone com valor não numerico', function() {
+
         cy.get('#phone').click().type('teste')
         cy.get('#phone').should('have.value','')
     })
@@ -113,11 +115,28 @@ describe('Central de Atendimento ao Cliente TAT', function () {
         cy.get('#open-text-area').clear().should('have.value', '')
 
     })
-
+    
     it('exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios',function(){
         
-        cy.get('.button').click()
+        cy.get('button[type="submit"]').click()
 
         cy.get('.error').should('be.visible')  
     })
+
+    //comandos costumizados para evitar duplicidade de código -> comando costumizados(preferencial e evita duplicacao de codigo) vs page objects
+    it.only('Evia formualrio com sucesso usando comandosocutmizados', function(){
+        cy.fillMandatoryFieldsAndSubmit()
+
+        cy.get('.success').should('be.visible')
+
+    })
+
+    //uso do .contains() -> seletor,texto especifico
+    it('exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios',function(){
+        
+        cy.contains('button', 'Enviar').click()
+
+        cy.get('.error').should('be.visible')  
+    })
+
 })  
