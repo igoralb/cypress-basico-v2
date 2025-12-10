@@ -39,6 +39,7 @@ describe('Central de Atendimento ao Cliente TAT', function () {
         cy.get('.success').should('be.visible')
 
     })
+
     it('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', function () {
 
         cy.get('#firstName')
@@ -67,7 +68,7 @@ describe('Central de Atendimento ao Cliente TAT', function () {
         cy.get('#phone').should('have.value', '')
     })
 
-    it.only('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function () {
+    it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function () {
         cy.get('#firstName')
             .click()
             .type("Igor")
@@ -203,10 +204,11 @@ describe('Central de Atendimento ao Cliente TAT', function () {
                 cy.wrap($radio).should('be.checked')
             })
     })
+
     //ESSA FORMA NÃO É PERFORMÁTICA
 
     // agora vamos ver os checkbox 
-    // it.only('marca ambos checkboxes, depois desmarca o último', ()=>{
+    // it('marca ambos checkboxes, depois desmarca o último', ()=>{
     //     cy.get('input[type="checkbox"]')
     //         .each(function($checkbox){
     //             //lemprar de utilizar o wrap como forma de lidar com o objeto - o get espera uma string
@@ -216,18 +218,45 @@ describe('Central de Atendimento ao Cliente TAT', function () {
     // })
 
     //FORMA CORRETA
-    it.only('marca ambos checkboxes, depois desmarca o último', () => {
+    it('marca ambos checkboxes, depois desmarca o último', () => {
         cy.get('#check input[type="checkbox"]')
             .check()
             .should('be.checked')
 
         cy.get('input[type="checkbox"]')
-            .last()                     
-            .uncheck()              
+            .last()
+            .uncheck()
             .should('not.be.checked')
     })
-    
-    //Seção 7: Fazendo upload de arquivos com Cypress
 
+    //Seção 7: Fazendo upload de arquivos com Cypress
+    it('seleciona um arquivo da pasta fixtures', () => {
+        cy.get('input[type="file"]')
+            .should("not.have.value")
+            .selectFile('cypress/fixtures/example.json')
+            .should(function ($input) {
+                expect($input[0].files[0].name).to.equal('example.json')
+            })
+    })
+
+    it('seleciona um arquivo simulando um drag-and-drop', () => {
+        cy.get('input[type="file"]')
+            .should("not.have.value")
+            .selectFile('cypress/fixtures/example.json', { action: 'drag-drop' })
+            .should(function ($input) {
+                expect($input[0].files[0].name).to.equal('example.json')
+            })
+    })
+
+    //simplificar a forma de passar o arquivo e dar um alias a ela e n preciasr passar o caminho todo
+    it.only('seleciona um arquivo utilizando uma fixture para a qual foi dada um alias', () => {
+        cy.fixture('example.json', { enconding: null }).as('exampleFile')
+
+        cy.get('input[type="file"]')
+            .selectFile('@exampleFile')
+            .should(function ($input) {
+                expect($input[0].files[0].name).to.equal('example.json')
+            })
+    })
 
 })  
