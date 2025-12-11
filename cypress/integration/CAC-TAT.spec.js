@@ -7,8 +7,9 @@
 //diretorio com as aulas: https://github.com/wlsf82/cypress-basico-v2/tree/main
 
 describe('Central de Atendimento ao Cliente TAT', function () {
-
+    const TIME_MESSAGE = 3000
     beforeEach(() => {
+
         cy.visit('./src/index.html')
     })
 
@@ -19,7 +20,7 @@ describe('Central de Atendimento ao Cliente TAT', function () {
     })
 
     it('preenche os campos obrigatórios e envia o formulário', function () {
-
+        cy.clock()
         cy.get('#firstName')
             .click()
             .type("Igor")
@@ -37,11 +38,12 @@ describe('Central de Atendimento ao Cliente TAT', function () {
         cy.get('.button').click()
 
         cy.get('.success').should('be.visible')
-
+        cy.tick(TIME_MESSAGE)
+        cy.get('.success').should('not.be.visible')
     })
 
     it('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', function () {
-
+        cy.clock()
         cy.get('#firstName')
             .click()
             .type("Igor")
@@ -56,10 +58,11 @@ describe('Central de Atendimento ao Cliente TAT', function () {
 
         cy.get('#open-text-area').click().type("Este é apenas um teste", { delay: 0 })
 
-
         cy.get('button[type="submit"]').click()
 
         cy.get('.error').should('be.visible')
+        cy.tick(TIME_MESSAGE)
+        cy.get('.error').should('not.be.visible')
     })
 
     it('preenche campo telefone com valor não numerico', function () {
@@ -69,6 +72,8 @@ describe('Central de Atendimento ao Cliente TAT', function () {
     })
 
     it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function () {
+        cy.clock()
+
         cy.get('#firstName')
             .click()
             .type("Igor")
@@ -88,6 +93,8 @@ describe('Central de Atendimento ao Cliente TAT', function () {
         cy.get('.button').click()
 
         cy.get('.error').should('be.visible')
+        cy.tick(TIME_MESSAGE)
+        cy.get('.error').should('not.be.visible')
     })
     it('preenche e limpa os campos nome, sobrenome, email e telefone', function () {
         cy.get('#firstName')
@@ -118,26 +125,32 @@ describe('Central de Atendimento ao Cliente TAT', function () {
     })
 
     it('exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios', function () {
-
+        cy.clock()
         cy.get('button[type="submit"]').click()
 
         cy.get('.error').should('be.visible')
+        cy.tick(TIME_MESSAGE)
+        cy.get('.error').should('not.be.visible')
     })
 
     //comandos costumizados para evitar duplicidade de código -> comando costumizados(preferencial e evita duplicacao de codigo) vs page objects
     it('Evia formualrio com sucesso usando comandosocutmizados', function () {
+        cy.clock()
         cy.fillMandatoryFieldsAndSubmit()
 
         cy.get('.success').should('be.visible')
-
+        cy.tick(TIME_MESSAGE)
+        cy.get('.success').should('not.be.visible')
     })
 
     //uso do .contains() -> seletor,texto especifico 
     it('exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios', function () {
-
+        cy.clock()
         cy.contains('button', 'Enviar').click()
 
         cy.get('.error').should('be.visible')
+        cy.tick(TIME_MESSAGE)
+        cy.get('.error').should('not.be.visible')
     })
 
     //uso de select options de forma aleatoria 
@@ -273,8 +286,18 @@ describe('Central de Atendimento ao Cliente TAT', function () {
     })
 
     //simulando viewport em dispostivos moveis
-   // criamos um script no package.json sobreescrevendo as alturas para o mobile
-   
-    
+    // criamos um script no package.json sobreescrevendo as alturas para o mobile
+
+
+    // //avançando nos testes
+    // it.only('Verifica tempo de mensagem de sucesso', () => {
+    //     cy.clock()
+    //     cy.fillMandatoryFieldsAndSubmit()
+    //     cy.get('.success').should('be.visible')
+
+    //     cy.tick(3000)
+    //     cy.get('.success').should('not.be.visible')
+    // })
+
 
 })  
