@@ -272,6 +272,9 @@ describe('Central de Atendimento ao Cliente TAT', function () {
             .click()
     })
 
+    //simulando viewport em dispostivos moveis
+   // criamos um script no package.json sobreescrevendo as alturas para o mobile
+   
     
 
 })  
