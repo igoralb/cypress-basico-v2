@@ -71,7 +71,9 @@ describe('Central de Atendimento ao Cliente TAT', function () {
         cy.get('#phone').should('have.value', '')
     })
 
-    it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function () {
+    it.only('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function () {
+        const texto = Cypress._.repeat(" teste",2000)
+        
         cy.clock()
 
         cy.get('#firstName')
@@ -86,7 +88,7 @@ describe('Central de Atendimento ao Cliente TAT', function () {
             .click()
             .type("igor.bastos@teste.com")
 
-        cy.get('#open-text-area').click().type("Este é apenas um teste", { delay: 0 })
+        cy.get('#open-text-area').click().invoke('val',texto)
 
         cy.get('#phone-checkbox').check()
 
@@ -154,18 +156,20 @@ describe('Central de Atendimento ao Cliente TAT', function () {
     })
 
     //uso de select options de forma aleatoria 
-    it('Selecionar uma opção de forma aleatoria', () => {
+    Cypress._.times(5, () => {
+        it('Selecionar uma opção de forma aleatoria', () => {
 
-        cy.get('select#product option')
-            .not('[disabled]')
-            .as('options')
-            .its('length', { log: false }).then(n => {
-                cy.get('@options', { log: false }).then($options => {
-                    const randomOptionIndex = Cypress._.random(n - 1)
-                    const randomOptionText = $options[randomOptionIndex].innerText
-                    cy.get('select').select(randomOptionText)
+            cy.get('select#product option')
+                .not('[disabled]')
+                .as('options')
+                .its('length', { log: false }).then(n => {
+                    cy.get('@options', { log: false }).then($options => {
+                        const randomOptionIndex = Cypress._.random(n - 1)
+                        const randomOptionText = $options[randomOptionIndex].innerText
+                        cy.get('select').select(randomOptionText)
+                    })
                 })
-            })
+        })
     })
     // da certo ser no get a chamada pelo elemento select ou pelo id  dos products
     it('seleciona produto (seleciona um produto (YouTube) por seu texto', () => {
@@ -298,6 +302,49 @@ describe('Central de Atendimento ao Cliente TAT', function () {
     //     cy.tick(3000)
     //     cy.get('.success').should('not.be.visible')
     // })
+    it('exibe e esconde as mensagens de sucesso e erro usando o .invoke', () => {
+        cy.get('.success')
+            .should('not.be.visible')
+            .invoke('show')
+            .should('be.visible')
+            .and('contain', 'Mensagem enviada com sucesso.')
+            .invoke('hide')
+            .should('not.be.visible')
+        cy.get('.error')
+            .should('not.be.visible')
+            .invoke('show')
+            .should('be.visible')
+            .and('contain', 'Valide os campos obrigatórios!')
+            .invoke('hide')
+            .should('not.be.visible')
+    })
+
+    it.only('preenche a area de texto usando o comando invoke', () => {
+        const email = "igor.bastos@teste.com"
+        const nome = "joão"
+        const sobrenome = "Da Silva"
+        const texto = "texto teste para ser testado"
+
+        cy.clock()
+
+        cy.get('#firstName')
+            .invoke('val', nome)
+        cy.get('#lastName')
+            .invoke('val', sobrenome)
+        cy.get('#email')
+            .invoke('val', email)
+        cy.get('#open-text-area')
+            .invoke('val', texto)
+        cy.get('.button')
+            .click()
+        cy.get('.success')
+            .should('be.visible')
+
+        cy.tick(TIME_MESSAGE)
+
+        cy.get('.success')
+            .should('not.be.visible')
+    })
 
 
-})  
+})
