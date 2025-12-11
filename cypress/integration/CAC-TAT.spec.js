@@ -71,9 +71,9 @@ describe('Central de Atendimento ao Cliente TAT', function () {
         cy.get('#phone').should('have.value', '')
     })
 
-    it.only('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function () {
-        const texto = Cypress._.repeat(" teste",2000)
-        
+    it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function () {
+        const texto = Cypress._.repeat(" teste", 2000)
+
         cy.clock()
 
         cy.get('#firstName')
@@ -88,7 +88,7 @@ describe('Central de Atendimento ao Cliente TAT', function () {
             .click()
             .type("igor.bastos@teste.com")
 
-        cy.get('#open-text-area').click().invoke('val',texto)
+        cy.get('#open-text-area').click().invoke('val', texto)
 
         cy.get('#phone-checkbox').check()
 
@@ -319,7 +319,7 @@ describe('Central de Atendimento ao Cliente TAT', function () {
             .should('not.be.visible')
     })
 
-    it.only('preenche a area de texto usando o comando invoke', () => {
+    it('preenche a area de texto usando o comando invoke', () => {
         const email = "igor.bastos@teste.com"
         const nome = "joão"
         const sobrenome = "Da Silva"
@@ -345,6 +345,22 @@ describe('Central de Atendimento ao Cliente TAT', function () {
         cy.get('.success')
             .should('not.be.visible')
     })
+    it('faz uma requisoção HTTP', () => {
+        cy.request('https://cac-tat.s3.eu-central-1.amazonaws.com/index.html')
+            .should(function (response) {
+                const {status, statusText,body} = response
+                expect(status).to.equal(200)
+                expect(statusText).to.equal('OK')
+                expect(body).to.include('CAC TAT')
+            })
+    })
 
+    //desafio para encontrar o gato
+    it.only('Encontra gato escondido na aplicação',()=>{
+        cy.request('https://cac-tat.s3.eu-central-1.amazonaws.com/index.html').should(function(response){
+            const{body}=response
+            expect(body).to.include('🐈')
+        })
+    })
 
 })
